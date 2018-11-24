@@ -199,4 +199,17 @@ public extension Swifter {
         }
     }
     
+    public func postOAuthAccessToken(token: String, verifier: String, success: @escaping TokenSuccessHandler, failure: FailureHandler?) {
+        let path =  "oauth/access_token"
+        let parameters = ["oauth_token": token, "oauth_verifier": verifier]
+        
+        self.client.post(path, baseURL: .oauth, parameters: parameters, uploadProgress: nil, downloadProgress: nil, success: { data, response in
+            
+            let responseString = String(data: data, encoding: .utf8)!
+            let accessToken = Credential.OAuthAccessToken(queryString: responseString)
+            success(accessToken, response)
+            
+        }, failure: failure)
+    }
+    
 }
